@@ -1,0 +1,13 @@
+
+This is a manifest file which we are testing to see if we can extract the file names and their paths using a powershell/batch command combination. 
+
+Thanks 
+
+
+TFS450982 /classic/web/asp/web/global/file1
+TFS450982 /classic/web/asp/web/global/file2
+TFS452435 /classic/web/asp/web/code/test1
+TFS455766 /classic/web/asp/web/code/test2
+TFS455766 /classic/web/asp/web/code/test3
+TFS446876 /classic/web/asp/web/code/test4
+TFS465471 /classic/web/asp/asp/Includes/spread.txt
