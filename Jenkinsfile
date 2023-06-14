@@ -4,15 +4,29 @@ pipeline {
         stage('create zip file') {
             steps {
                 script {
-                    def filesToZip = [
-                        "asp\\web\\code\\test1",
-                        "asp\\web\\code\\test2",
-                        "asp\\web\\code\\test3",
-                        "asp\\web\\code\\test4"
-                    ]
+                    // Read the manifests.txt file
+                    def manifestFile = bat(returnStdout: true, script: 'type Manifests\\manifests.txt').trim()
+                    def lines = manifestFile.split('\n')
 
                     // Create the deploy directory if it doesn't exist
                     bat "if not exist deploy mkdir deploy"
+
+                    def filesToZip = []
+
+                    for (line in lines) {
+                        if (line =~ /^TFS.*/) {
+                            // Split each line into parts
+                            def parts = line.split(' ')
+                            def filePath = parts[2].trim()
+
+                            // Extract only the file name with path
+                            def fileNameWithPath = filePath.substring(filePath.indexOf('/', 1) + 1)
+
+                            // Add the file name with path to the filesToZip list
+                            filesToZip.add(fileNameWithPath)
+                        }
+                    }
+
 
                     for (file in filesToZip) {
                         try {
