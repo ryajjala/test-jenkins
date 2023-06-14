@@ -12,20 +12,24 @@ pipeline {
                     bat "if not exist deploy mkdir deploy"
 
                     def filesToZip = []
-
                     for (line in lines) {
-                        if (line =~ /^TFS.*/) {
-                            // Split each line into parts
-                            def parts = line.split(' ')
-                            def filePath = parts[2].trim()
-
-                            // Extract only the file name with path
-                            def fileNameWithPath = filePath.substring(filePath.indexOf('/', 1) + 1)
-
-                            // Add the file name with path to the filesToZip list
-                            filesToZip.add(fileNameWithPath)
-                        }
-                    }
+                        echo "Line: ${line}" // Debug line
+                        
+						if (line =~ /^TFS.*\/.*$/) {
+							// Split each line into parts
+							def parts = line.split(' ')
+					        echo "Parts: ${parts}" // Debug line
+							if (parts.size() >= 2) {
+								def filePath = parts[1].trim()
+								def fileNameWithPath = filePath.substring(filePath.indexOf('/') + 1)
+								fileNameWithPath = fileNameWithPath.replaceAll('/', '\\\\') // Replace '/' with '\\'
+								fileNameWithPath = fileNameWithPath.replace('classic\\web\\', '') // Remove 'classic\web'
+								echo "fileNameWithPath: ${fileNameWithPath}" //Debug Line
+								// Add the file name with path to the filesToZip list
+								filesToZip.add(fileNameWithPath)
+							}
+						}
+					}
 
 
                     for (file in filesToZip) {
