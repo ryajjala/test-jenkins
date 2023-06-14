@@ -56,6 +56,7 @@ pipeline {
 
                     // Create the zip file
                     bat "powershell Compress-Archive -Path deploy -DestinationPath ${env.WORKSPACE}\\myartifact.zip"
+                    archiveArtifacts artifacts: 'myartifacts.zip'
                 }
             }
         }
