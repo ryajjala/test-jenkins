@@ -60,6 +60,28 @@ pipeline {
                 }
             }
         }
+		stage('Upload to Artifactory') {
+            steps {
+                script {
+                    def currentDate = new Date().format('yyyyMMdd')
+                    def buildNumber = env.BUILD_NUMBER
+                    def branchName = env.GIT_BRANCH_NAME
+                    def version = branchName =~ /release_(\d+\.\d+\.\d+\.\d+)/ ? branchName[0][1] : ""
+
+                    def renamedArtifact = "cdosp_ASP_${currentDate}.${buildNumber}_v${version}.zip"
+
+                    windowsArtifactUpload url: 'https://artifactory.company.com/artifactory',
+                            spec: [
+                                    uploadSpec: [
+                                            // Source path of the artifact
+                                            sourcePath: "${env.WORKSPACE}\\app.zip",
+                                            // Target path in the Artifactory repository
+                                            targetPath: "webapp/General/cdosuite-nuget-snapshot-locl/builds/bau-classic-ASP-upper-ci/release/latest/${renamedArtifact}"
+                                    ]
+                            ]
+                }
+            }
+        }
     }
     post {
         always {
